@@ -1,0 +1,10 @@
+/run/initialize
+
+/gps/particle gamma
+/gps/pos/type Point
+/gps/pos/centre 0. 0. -40. cm
+/gps/direction 0 0 1
+/gps/ene/type Mono
+/gps/ene/mono 500 MeV
+
+/run/beamOn 10
