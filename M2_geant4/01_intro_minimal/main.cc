@@ -9,7 +9,7 @@
 
 int main(int argc, char** argv)
 {
-  auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
+  auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Serial);
   runManager->SetUserInitialization(new DetectorConstruction());
   runManager->SetUserInitialization(new FTFP_BERT());
   runManager->SetUserInitialization(new ActionInitialization());
