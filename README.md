@@ -20,7 +20,7 @@ Per conseguire i crediti relativi all'esame gli studenti dovranno risolvere un e
 ---
 
 ### Calendario e argomenti
-Le lezioni si tengono in **Aula Caccin (Dipartimento di Fisica, Piano -1, di fronte al corridoio D0)** dalle **15:00 alle 18:00**.
+Le lezioni si tengono in **Aula Caccin (Dipartimento di Fisica, Piano -1, di fronte al corridoio E0)** dalle **15:00 alle 18:00**.
 
 Il calendario è il seguente:
 
