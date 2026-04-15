@@ -1,6 +1,7 @@
 
 # Corso Strumenti Montecarlo per la Fisica delle Particelle
 Dottorato di Ricerca in Fisica
+
 M. Sorbara, T. Minniti, F. Palma
 
 ---
@@ -40,30 +41,105 @@ Eventuali lezioni di recupero:
 * Giovedì 28 Maggio
 
 
-Questa repository verrà utilizzata per condividere il codice relativo alle esercitazioni e verrà aggiornata di volta in volta con gli strumenti di cui avrete bisogno.
+---
+
+# Struttura della repository
+
+La repository è organizzata in tre sezioni principali:
+
+1. **Esercizi introduttivi in C++**
+2. **Progetto Geant4**
+3. **Progetto FLUKA**
+
+Gli esercizi sono organizzati per lezione e progettati per essere **incrementali**: il codice sviluppato nelle prime lezioni viene esteso e modificato nelle successive.
+
+```
+
+SMCFP_main
+|
+├── M1_basics
+│
+├── M2_geant4
+│ 		├── base
+│ 		└── full
+│
+└── M3_fluka
+		  ├── base
+		  └── full
+```
+---
+
+# M1_basics
+
+Questa cartella contiene esercizi introduttivi in **C++** utilizzati nella prima lezione per introdurre i concetti fondamentali delle simulazioni Montecarlo:
+
+- generazione di numeri casuali uniformi
+- stima di π con metodo Montecarlo
+- generazione di distribuzioni esponenziali
 
 ---
 
-# Lezione 0
+# M2_geant4
 
-E' semplicemente un messaggio di benvenuto per determinare se tutto il sistema funziona. Dovete semplicemente fare un edit del file Welcome.txt seguendo le istruzioni al suo interno.
-Potete fare edit online del file tramite l'interfaccia web di GitHub, oppure fare il pull della repository sul vostro PC (dopo aver installato git):
+Contiene il materiale relativo alle simulazioni con **Geant4**. Il lavoro è organizzato in due parti:
 
-```bash
-git clone git@github.com:smatt4-unirm2/m0-welcome-<user>.git
-cd m0-welcome-<user>
-```
-Modificare il file
-```bash
-nano Welcome.txt #o qualsiasi editor
-```
+## base
 
-E infine fate il commit della repository
-```bash
-git add Welcome.txt #per aggiungere ai file del commit il file Welcome.txt
-git commit -m "Messaggio per identificare il commit"
-git push
-```
+Questa cartella contiene un **esempio minimale di Geant4**, derivato da uno degli esempi ufficiali. Questo esempio verrà utilizzato per:
+
+- familiarizzare con l'ambiente Geant4
+- visualizzare la geometria
+- modificare parametri base
+- eseguire simulazioni con macro
+
+## full
+
+Questa cartella contiene il **progetto completo sviluppato durante il corso**.
+
+Il progetto è basato su una versione estesa dell'esempio `B1` e rappresenta una simulazione semplificata di un **rivelatore per particelle**.
+Componenti principali del codice:
+
+- **DetectorConstruction**  
+  definizione della geometria del rivelatore
+
+- **PrimaryGeneratorAction**  
+  generazione delle particelle incidenti
+
+- **PhysicsList**  
+  definizione dei modelli fisici
+
+- **RunAction / EventAction / SteppingAction**  
+  gestione della simulazione e raccolta dei dati
+
+---
+
+# M3_fluka
+
+Contiene gli esempi e gli esercizi relativi all'utilizzo di **FLUKA**. Il lavoro è organizzato in due parti:
+
+## base
+
+Contiene un **esempio minimale FLUKA** utilizzato per:
+
+- introdurre la struttura dei file di input
+- modificare l'interfaccia grafica **FLAIR**
+- visualizzare la geometria e i suoi errori
+- modificare parametri base dell'input
+
+## full
+
+Questa cartella contiene la simulazione completa sviluppata durante il corso.
+
+Il progetto consiste nella simulazione di un **fantoccio ad acqua irradiato con un fascio di particelle**, con l'obiettivo di calcolare il **profilo di dose**.
+
+Elementi principali della simulazione:
+
+- definizione della geometria del phantom
+- definizione dei materiali
+- definizione del fascio incidente
+- scoring della dose
+
+---
 
 
 
