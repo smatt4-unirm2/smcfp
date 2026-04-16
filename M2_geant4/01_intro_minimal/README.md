@@ -69,6 +69,19 @@ Collega tutte le azioni utente:
 
 Punto centrale dove registrare nuove azioni.
 
+---
+
+### ➕ Estensione: EventAction e SteppingAction
+
+Per introdurre lo **scoring**, sono state aggiunte due classi:
+
+- `EventAction`
+- `SteppingAction`
+
+Queste permettono di raccogliere osservabili fisiche durante la simulazione.
+
+---
+
 ### 4. RunAction
 
 Eseguita:
@@ -81,6 +94,10 @@ Attualmente stampa solo messaggi, ma può essere estesa per:
 - output su file
 - analisi dati
 - istogrammi
+
+In questa versione, è stata estesa per scrivere un file ROOT con le variabili per evento.
+
+---
 
 ### 5. main.cpp
 
@@ -98,14 +115,37 @@ Physics list:
 ```
 FTFP_BERT
 ```
+Utilizzata per simulazioni generiche, che include, nelle interazioni inelastiche adrone-nucleo il modello Fritiof Parton (FTF) e il modello Bertini.
 
-Una delle più usate in Geant4 per simulazioni generiche.
+---
+
+## Scoring e output ROOT
+
+La simulazione produce un file `scoring.root` contenente un **TTree** con una entry per evento.
+Variabili salvate:
+
+- `eventID` : identificatore evento
+- `primaryE_MeV` : energia del primario
+- `edep_MeV` : energia totale depositata nel blocco
+- `edepHad_MeV` : energia depositata da adroni
+- `edepEle_MeV` : energia depositata da elettroni/positroni
+- `edepGam_MeV` : energia depositata da gamma
+- `trackLength_mm` : lunghezza totale delle tracce cariche
+- `nStepsAbs` : numero di step nel blocco
+- `nSecondaries` : numero di secondarie prodotte
+- `maxStepEdep_MeV` : massimo deposito in un singolo step
+
+Lo scoring è implementato tramite:
+
+- `SteppingAction`: misura quantità locali ad ogni step
+- `EventAction`: accumula e salva i risultati per evento
 
 ---
 
 ## Compilazione
 
-Il progetto Geant4 utilizza CMake per gestire la compilazione del progetto. Analizzare il file `CMakeLists.txt` per capire com'è costruito.
+Il progetto Geant4 utilizza CMake per gestire la compilazione del progetto. Analizzare il file 
+`CMakeLists.txt` per capire com'è costruito.
 
 Per compilare il progetto:
 ```bash
@@ -120,11 +160,13 @@ make        #il CMake costruisce un makefile con tutte le dipendenze richieste, 
 
 ### Modalità interattiva (GUI)
 
-```bash
+Dalla cartella di build eseguire:
+
+``` bash
 ./calo
 ```
 
-Esegue automaticamente:
+Avvia il programma ed esegue automaticamente:
 
 ```
 macro/init_vis.mac
@@ -132,15 +174,9 @@ macro/init_vis.mac
 
 che è la macro per impostare la visualizzazione. Questa modalità permette di accedere al visualizzatore OpenGL, utile per fare debug della geometria e per visualizzare pochi eventi (e.g. per figure nei paper).
 
----
-
 ### Modalità batch (macro)
 
-```bash
-./calo run.mac
-```
-
-le macro sono istruzioni in sequenza che danno istruzioni a Geant per eseguire la simulazione. Controllare l'esempio `macro/run.mac` per alcuni dei comandi.
+Le macro sono comandi in sequenza che danno istruzioni a Geant per eseguire la simulazione. Controllare l'esempio macro/run.mac per alcuni dei comandi.
 
 Esempio:
 
@@ -150,6 +186,21 @@ Esempio:
 /vis/drawVolume             # Disegna la geometria
 /run/beamOn 10              # Lancia 10 eventi
 ```
+
+Per eseguire il programma in batch mode (senza avviare la visualizzazione) con una macro, usare:
+
+``` bash
+./calo run.mac
+```
+In questo modo il programma esegue le istruzioni e simula il numero di particelle specificate dal comando `/run/beamOn`.
+
+Nota: una macro si può eseguire anche dal visualizzatore con
+
+```
+/control/execute path/to/macro.mac
+```
+
+questo è possibile quando nella macro ci sono pochi eventi o ci sono solo istruzioni semplici e.g. impostare la visualizzazione o il generatore.
 
 ### Comandi aggiuntivi di setup
 
@@ -222,6 +273,44 @@ Questi comandi permettono di controllare il **particle gun direttamente da macro
 ```
 ---
 
+## Analisi con ROOT
+
+Aprire il file:
+
+```bash
+root scoring.root
+```
+
+Attenzione: il file ha sempre lo stesso nome, quindi viene sovrascritto ogni volta che si esegue la simulazione. Cambiare il nome tra una simulazione e l'altra per evitarlo
+
+Comandi base:
+
+```C++
+t->Print();                      // struttura del tree
+t->Scan();                       // stampa eventi
+```
+
+Esempi di plot:
+
+```C++
+t->Draw("edep_MeV");             // energia totale
+t->Draw("edepEle_MeV");          // componente elettromagnetica
+t->Draw("edepHad_MeV");          // componente adronica
+t->Draw("trackLength_mm");       // lunghezza tracce
+```
+
+Correlazioni:
+
+```C++
+t->Draw("edepEle_MeV:edepHad_MeV");
+```
+
+Istogramma con binning:
+
+```C++
+t->Draw("edep_MeV>>h(100,0,1000)");
+```
+
 ## Esercizi
 
 - compilare ed eseguire la simulazione
@@ -230,3 +319,7 @@ Questi comandi permettono di controllare il **particle gun direttamente da macro
 - lanciare una macro esempio
 - cambiare posizione, energia, particella
 - lanciare una macro con due test a energia diversa
+- aprire scoring.root con ROOT
+- esplorare il tree (t->Print())
+- fare l’istogramma di edep_MeV
+- confrontare edepEle_MeV e edepHad_MeV per un fascio di protoni e di elettroni
