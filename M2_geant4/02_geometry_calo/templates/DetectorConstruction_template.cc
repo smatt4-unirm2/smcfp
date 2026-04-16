@@ -1,90 +1,93 @@
-#include "DetectorConstruction_template.hh"
+#include "DetectorConstruction.hh"
+
+#include "G4Material.hh"
+#include "G4MaterialPropertiesTable.hh"
+#include "G4NistManager.hh"
 
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
-#include "G4Material.hh"
-#include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
 #include "G4RotationMatrix.hh"
-#include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
+
 #include "G4VisAttributes.hh"
+#include "G4Colour.hh"
 
-DetectorConstructionTemplate::DetectorConstructionTemplate(G4bool useOpticalProperties)
-  : fUseOpticalProperties(useOpticalProperties)
-{}
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
-DetectorConstructionTemplate::~DetectorConstructionTemplate()
+
+DetectorConstruction::DetectorConstruction(G4bool useOpticalProperties)
+ : G4VUserDetectorConstruction(),
+   fUseOpticalProperties(useOpticalProperties),
+   fCheckOverlaps(true)
+{
+}
+
+
+DetectorConstruction::~DetectorConstruction()
 {
   delete fRotZ90;
 }
 
-G4VPhysicalVolume* DetectorConstructionTemplate::Construct()
+
+G4VPhysicalVolume* DetectorConstruction::Construct()
 {
   DefineMaterials();
-
-  // TODO 1:
-  // Creare il mondo.
-
-  fRotZ90 = new G4RotationMatrix();
-  fRotZ90->rotateZ(90.0 * deg);
-
-  // TODO 2:
-  // Costruire in modo modulare:
-  //   crystal -> planeX -> planeY -> calorimeter
-
-  // TODO 3:
-  // Posizionare il calorimetro nel mondo.
-
-  // TODO 4:
-  // Aggiungere attributi di visualizzazione.
-
-  return nullptr;
+  return DefineVolumes();
 }
 
-void DetectorConstructionTemplate::DefineMaterials()
-{
-  auto* nist = G4NistManager::Instance();
-  fWorldMat = nist->FindOrBuildMaterial("G4_AIR");
-  fGapMat = fWorldMat;
-  fCrystalMat = nist->FindOrBuildMaterial("G4_PbWO4");
 
+void DetectorConstruction::DefineMaterials()
+{
+  auto nistManager = G4NistManager::Instance();
+
+  // TODO: definire i materiali usati nella simulazione
+  fWorldMaterial   = nistManager->FindOrBuildMaterial("G4_AIR");
+  fGapMaterial     = nistManager->FindOrBuildMaterial("G4_AIR");
+  fCrystalMaterial = nistManager->FindOrBuildMaterial("G4_PbWO4");
+
+  // TODO: attivare opzionalmente le proprietà ottiche
   if (fUseOpticalProperties) {
-    DefineOpticalProperties();
+    DefinePbWO4OpticalProperties();
   }
 }
 
-void DetectorConstructionTemplate::DefineOpticalProperties()
+
+void DetectorConstruction::DefinePbWO4OpticalProperties()
 {
-  // TODO:
-  // Creare una G4MaterialPropertiesTable e assegnarla a fCrystalMat.
+  // TODO: aggiungere proprietà ottiche al PbWO4
+  // Esempio:
+  // - indice di rifrazione
+  // - lunghezza di assorbimento
+  // - scintillazione
 }
 
-G4LogicalVolume* DetectorConstructionTemplate::BuildCrystal()
-{
-  // TODO:
-  // Creare il solido della barra e il volume logico del cristallo.
-  return nullptr;
-}
 
-G4LogicalVolume* DetectorConstructionTemplate::BuildPlaneX(G4LogicalVolume* crystalLV)
+G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 {
   // TODO:
-  // Creare il volume logico del piano X e posizionare 16 barre lungo x.
-  return nullptr;
-}
+  // 1) costruire il mondo
+  // 2) costruire il calorimetro
+  // 3) costruire il cristallo base
+  // 4) costruire un piano X con 16 cristalli
+  // 5) costruire un piano Y ruotando i cristalli di 90 gradi
+  // 6) alternare 12 piani nel calorimetro
 
-G4LogicalVolume* DetectorConstructionTemplate::BuildPlaneY(G4LogicalVolume* crystalLV)
-{
-  // TODO:
-  // Creare il volume logico del piano Y, ruotare le barre e posizionarle lungo y.
-  return nullptr;
-}
+  // Esempio di struttura:
+  //
+  // World
+  //   └── Calorimeter
+  //         ├── PlaneX
+  //         │     ├── Crystal
+  //         │     ├── Crystal
+  //         │     └── ...
+  //         ├── PlaneY
+  //         │     ├── Crystal (ruotato)
+  //         │     ├── Crystal (ruotato)
+  //         │     └── ...
+  //         └── ...
 
-G4LogicalVolume* DetectorConstructionTemplate::BuildCalorimeter(G4LogicalVolume* planeXLV,
-                                                                G4LogicalVolume* planeYLV)
-{
-  // TODO:
-  // Creare il volume madre del calorimetro e alternare i piani X/Y lungo z.
+  // Ricordarsi sempre di ritornare il world fisico
   return nullptr;
 }
