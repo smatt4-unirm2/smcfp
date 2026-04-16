@@ -1,4 +1,4 @@
-# Lezione 3 - Scoring dell'energia depositata in un calorimetro Geant4
+# Lezione 3 - Scoring 
 Modulo 2 - Geant4
 
 Questo esempio estende il modulo `02_geometry_calo` aggiungendo **lo scoring**, senza modificare la geometria, il generatore primario o i file macro di base.
