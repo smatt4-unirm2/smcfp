@@ -30,5 +30,5 @@ void DetectorConstruction::DefineMaterials()
 {
   auto* nist = G4NistManager::Instance();
   fWorldMat = nist->FindOrBuildMaterial("G4_AIR");
-  fAbsorberMat = nist->FindOrBuildMaterial("G4_W");
+  fAbsorberMat = nist->FindOrBuildMaterial("G4_PbWO4");
 }

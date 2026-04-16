@@ -17,7 +17,7 @@ Questo esempio ha lo scopo di introdurre la struttura **minima** di un'applicazi
 La simulazione rappresenta un caso molto semplice:
 
 - un **mondo** (World) riempito di aria;
-- un **blocco cubico di tungsteno** al centro;
+- un **blocco cubico di PbWO4** al centro;
 - un **elettrone da 1 GeV** sparato lungo l'asse z.
 
 ---
