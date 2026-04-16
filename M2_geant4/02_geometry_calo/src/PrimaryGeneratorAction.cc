@@ -8,10 +8,13 @@
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
   fGun = new G4ParticleGun(1);
+
   auto* particle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
   fGun->SetParticleDefinition(particle);
   fGun->SetParticleEnergy(1.0 * GeV);
-  fGun->SetParticlePosition({0., 0., -40. * cm});
+
+  // Il fascio parte prima del calorimetro e viaggia lungo +z.
+  fGun->SetParticlePosition({0., 0., -25. * cm});
   fGun->SetParticleMomentumDirection({0., 0., 1.});
 }
 

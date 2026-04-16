@@ -1,46 +1,39 @@
-#ifndef DetectorConstruction_h
-#define DetectorConstruction_h 1
+#ifndef DetectorConstructionTemplate_h
+#define DetectorConstructionTemplate_h 1
 
 #include "G4VUserDetectorConstruction.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4RotationMatrix.hh"
 #include "globals.hh"
 
 class G4LogicalVolume;
 class G4VPhysicalVolume;
 class G4Material;
+class G4RotationMatrix;
 
-class DetectorConstruction : public G4VUserDetectorConstruction
+class DetectorConstructionTemplate : public G4VUserDetectorConstruction
 {
 public:
-  explicit DetectorConstruction(G4bool useOpticalProperties = true);
-  ~DetectorConstruction() override;
+  explicit DetectorConstructionTemplate(G4bool useOpticalProperties = false);
+  ~DetectorConstructionTemplate() override;
 
   G4VPhysicalVolume* Construct() override;
 
 private:
   void DefineMaterials();
-  void DefinePbWO4OpticalProperties();
+  void DefineOpticalProperties();
 
   G4LogicalVolume* BuildCrystal();
   G4LogicalVolume* BuildPlaneX(G4LogicalVolume* crystalLV);
   G4LogicalVolume* BuildPlaneY(G4LogicalVolume* crystalLV);
   G4LogicalVolume* BuildCalorimeter(G4LogicalVolume* planeXLV, G4LogicalVolume* planeYLV);
-  void SetupVisualization(G4LogicalVolume* worldLV,
-                          G4LogicalVolume* caloLV,
-                          G4LogicalVolume* planeXLV,
-                          G4LogicalVolume* planeYLV,
-                          G4LogicalVolume* crystalLV);
 
 private:
-  G4bool fUseOpticalProperties = true;
-
+  G4bool fUseOpticalProperties = false;
   G4Material* fWorldMat = nullptr;
   G4Material* fGapMat = nullptr;
   G4Material* fCrystalMat = nullptr;
-
   G4RotationMatrix* fRotZ90 = nullptr;
 
+  // Parametri da completare/modificare.
   G4double fBarSizeX = 2.0 * cm;
   G4double fBarSizeY = 32.015 * cm;
   G4double fBarSizeZ = 2.0 * cm;
