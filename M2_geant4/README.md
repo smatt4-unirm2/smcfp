@@ -1,6 +1,6 @@
-# SMCFP — Lezioni Geant4
+# Modulo 2 — Geant4
 
-Questo repository contiene quattro lezioni progressive sull'uso di **Geant4** per la simulazione di rivelatori, rivolte a dottorandi di fisica.
+Questo repository contiene quattro lezioni progressive sull'uso di **Geant4** per la simulazione di rivelatori.
 
 Ogni cartella è un progetto Geant4 indipendente con il proprio `CMakeLists.txt`, sorgenti e macro.
 
