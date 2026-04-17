@@ -1,7 +1,9 @@
 #include "EventAction.hh"
-
 #include "RunAction.hh"
 
+#include "G4PrimaryVertex.hh"
+#include "G4PrimaryParticle.hh"
+#include "G4ThreeVector.hh"
 #include "G4Event.hh"
 
 EventAction::EventAction(RunAction* runAction)
@@ -15,11 +17,40 @@ void EventAction::BeginOfEventAction(const G4Event*)
   Reset();
 }
 
-void EventAction::EndOfEventAction(const G4Event*)
+void EventAction::EndOfEventAction(const G4Event* event)
 {
-  // Alla fine dell'evento passiamo i dati accumulati alla RunAction,
-  // che li scriverà nel TTree ROOT.
-  fRunAction->FillEvent(*this);
+  G4double primaryEnergy = 0.0;
+  G4double primaryX0 = 0.0;
+  G4double primaryY0 = 0.0;
+  G4double primaryZ0 = 0.0;
+  G4double primaryTheta = 0.0;
+  G4double primaryPhi = 0.0;
+
+  auto* vertex = event->GetPrimaryVertex(0);
+  if (vertex != nullptr) {
+    auto* primary = vertex->GetPrimary();
+    if (primary != nullptr) {
+      primaryEnergy = primary->GetKineticEnergy();
+      primaryX0 = vertex->GetX0();
+      primaryY0 = vertex->GetY0();
+      primaryZ0 = vertex->GetZ0();
+
+      G4ThreeVector direction(primary->GetPx(),
+                              primary->GetPy(),
+                              primary->GetPz());
+
+      primaryTheta = direction.theta();
+      primaryPhi   = direction.phi();
+    }
+  }
+
+  fRunAction->FillEvent(*this,
+                        primaryEnergy,
+                        primaryX0,
+                        primaryY0,
+                        primaryZ0,
+                        primaryTheta,
+                        primaryPhi);
 }
 
 void EventAction::AddEdep(G4int plane, G4int crystal, G4double edep)
@@ -35,21 +66,6 @@ void EventAction::AddEdep(G4int plane, G4int crystal, G4double edep)
   fEdep[plane][crystal] += edep;
 }
 
-void EventAction::SetPrimary(G4double energy,
-                             G4double x0,
-                             G4double y0,
-                             G4double z0,
-                             G4double theta,
-                             G4double phi)
-{
-  fPrimaryEnergy = energy;
-  fPrimaryX0 = x0;
-  fPrimaryY0 = y0;
-  fPrimaryZ0 = z0;
-  fPrimaryTheta = theta;
-  fPrimaryPhi = phi;
-}
-
 void EventAction::Reset()
 {
   for (G4int iPlane = 0; iPlane < kNPlanes; ++iPlane) {
@@ -57,11 +73,4 @@ void EventAction::Reset()
       fEdep[iPlane][iBar] = 0.0;
     }
   }
-
-  fPrimaryEnergy = 0.0;
-  fPrimaryX0 = 0.0;
-  fPrimaryY0 = 0.0;
-  fPrimaryZ0 = 0.0;
-  fPrimaryTheta = 0.0;
-  fPrimaryPhi = 0.0;
 }

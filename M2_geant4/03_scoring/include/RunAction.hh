@@ -21,7 +21,13 @@ public:
   void BeginOfRunAction(const G4Run* run) override;
   void EndOfRunAction(const G4Run* run) override;
 
-  void FillEvent(const EventAction& eventAction);
+  void FillEvent(const EventAction& eventAction,
+               G4double primaryEnergy,
+               G4double primaryX0,
+               G4double primaryY0,
+               G4double primaryZ0,
+               G4double primaryTheta,
+               G4double primaryPhi);
 
 private:
   void Book();

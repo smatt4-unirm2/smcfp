@@ -38,7 +38,13 @@ void RunAction::EndOfRunAction(const G4Run*)
   }
 }
 
-void RunAction::FillEvent(const EventAction& eventAction)
+void RunAction::FillEvent(const EventAction& eventAction,
+                          G4double primaryEnergy,
+                          G4double primaryX0,
+                          G4double primaryY0,
+                          G4double primaryZ0,
+                          G4double primaryTheta,
+                          G4double primaryPhi)
 {
   ResetBranches();
 
@@ -50,13 +56,13 @@ void RunAction::FillEvent(const EventAction& eventAction)
     }
   }
 
-  // Copia delle variabili del primario.
-  fPrimaryEnergy = eventAction.GetPrimaryEnergy() / MeV;
-  fPrimaryX0     = eventAction.GetPrimaryX0() / mm;
-  fPrimaryY0     = eventAction.GetPrimaryY0() / mm;
-  fPrimaryZ0     = eventAction.GetPrimaryZ0() / mm;
-  fPrimaryTheta  = eventAction.GetPrimaryTheta() / deg;
-  fPrimaryPhi    = eventAction.GetPrimaryPhi() / deg;
+  // Copia delle variabili del primario lette dal G4Event.
+  fPrimaryEnergy = primaryEnergy / MeV;
+  fPrimaryX0     = primaryX0 / mm;
+  fPrimaryY0     = primaryY0 / mm;
+  fPrimaryZ0     = primaryZ0 / mm;
+  fPrimaryTheta  = primaryTheta / deg;
+  fPrimaryPhi    = primaryPhi / deg;
 
   fTree->Fill();
 }
@@ -84,9 +90,9 @@ void RunAction::Book()
 
   // Variabili del primario.
   fTree->Branch("genEnergy", &fPrimaryEnergy, "genEnergy/D");
-  fTree->Branch("genX",     &fPrimaryX0,     "genX/D");
-  fTree->Branch("genY",     &fPrimaryY0,     "genY/D");
-  fTree->Branch("genZ",     &fPrimaryZ0,     "genZ/D");
+  fTree->Branch("genX",      &fPrimaryX0,     "genX/D");
+  fTree->Branch("genY",      &fPrimaryY0,     "genY/D");
+  fTree->Branch("genZ",      &fPrimaryZ0,     "genZ/D");
   fTree->Branch("genTheta",  &fPrimaryTheta,  "genTheta/D");
   fTree->Branch("genPhi",    &fPrimaryPhi,    "genPhi/D");
 

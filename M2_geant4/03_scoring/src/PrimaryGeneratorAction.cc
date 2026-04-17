@@ -1,17 +1,11 @@
 #include "PrimaryGeneratorAction.hh"
 
-#include "EventAction.hh"
-
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4ThreeVector.hh"
 
-#include <cmath>
-
-PrimaryGeneratorAction::PrimaryGeneratorAction(EventAction* eventAction)
-  : fEventAction(eventAction)
+PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
   fGun = new G4ParticleGun(1);
 
@@ -31,20 +25,5 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 {
-  // Salviamo nel contenitore dell'evento le informazioni del primario.
-  const G4double energy = fGun->GetParticleEnergy();
-  const G4ThreeVector position = fGun->GetParticlePosition();
-  const G4ThreeVector direction = fGun->GetParticleMomentumDirection();
-
-  const G4double theta = direction.theta();
-  const G4double phi   = direction.phi();
-
-  fEventAction->SetPrimary(energy,
-                           position.x(),
-                           position.y(),
-                           position.z(),
-                           theta,
-                           phi);
-
   fGun->GeneratePrimaryVertex(event);
 }
