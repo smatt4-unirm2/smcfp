@@ -89,13 +89,11 @@ Eseguita:
 - all'inizio del run
 - alla fine del run
 
-Attualmente stampa solo messaggi, ma può essere estesa per:
+Utilizzata per:
 
 - output su file
 - analisi dati
 - istogrammi
-
-In questa versione, è stata estesa per scrivere un file ROOT con le variabili per evento.
 
 ---
 
@@ -139,6 +137,16 @@ Lo scoring è implementato tramite:
 
 - `SteppingAction`: misura quantità locali ad ogni step
 - `EventAction`: accumula e salva i risultati per evento
+
+
+Attenzione: il file ha un nome di default, in questo caso, poiché si utilizza il `G4AnalysisManager` per gestire il file ROOT, il nome può essere cambiato da macro con il comando 
+
+```txt
+/analysis/setFileName file_name #senza estensione .root, gestita da un altro comando
+```
+
+Vedremo nella lezione 03_scoring che questo non è l'unico modo per gestire i file di output.
+Ovviamente se il nome del file non viene cambiato tra una macro e l'altra, questo viene sovrascritto. 
 
 ---
 
@@ -280,8 +288,6 @@ Aprire il file:
 ```bash
 root scoring.root
 ```
-
-Attenzione: il file ha sempre lo stesso nome, quindi viene sovrascritto ogni volta che si esegue la simulazione. Cambiare il nome tra una simulazione e l'altra per evitarlo
 
 Comandi base:
 

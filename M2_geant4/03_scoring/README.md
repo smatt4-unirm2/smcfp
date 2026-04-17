@@ -35,11 +35,13 @@ La novità di questo modulo è il salvataggio dei dati di scoring in un file ROO
 
 ## Cosa viene scritto nel file ROOT
 
-Per ogni evento viene creato un record nel `TTree` chiamato `events`, contenuto nel file:
+Per ogni evento viene creato un record nel `TTree` chiamato `t`, contenuto nel file:
 
 ```txt
 scoring_calo.root
 ```
+
+ATTENZIONE: il nome del file è hardcoded nel `RunAction.cc`, quindi viene sovrascritto ogni volta che si esegue la simulazione e non è possibile cambiarlo. Cambiare il nome tra una simulazione e l'altra per evitarlo
 
 Le informazioni salvate sono:
 
@@ -143,7 +145,7 @@ La `RunAction` si occupa della scrittura su file ROOT.
 All'inizio del run:
 
 - apre il file `calo_scoring.root`;
-- crea il `TTree` `events`;
+- crea il `TTree` `t`;
 - definisce le branch.
 
 Alla fine di ogni evento, tramite il metodo `FillEvent(...)`, copia nei buffer del tree:
@@ -222,7 +224,7 @@ Da ROOT si può controllare il contenuto del tree con:
 
 ```cpp
 TFile* f = TFile::Open("calo_scoring.root");
-TTree* t = (TTree*)f->Get("events");
+TTree* t = (TTree*)f->Get("t");
 t->Print();
 ```
 
