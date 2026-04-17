@@ -1,61 +1,51 @@
 #include "PhysicsList.hh"
 
+// TODO:
+// Inserire qui gli #include dei costruttori di fisica che si vogliono usare.
+//
+// Esempi possibili:
+// #include "G4EmStandardPhysics.hh"
+// #include "G4DecayPhysics.hh"
+// #include "G4HadronPhysicsFTFP_BERT.hh"
+// #include "G4OpticalPhysics.hh"
+
+#include "G4SystemOfUnits.hh"
+#include "G4ios.hh"
+
 PhysicsList::PhysicsList()
   : G4VModularPhysicsList()
 {
   // TODO:
-  // 1) impostare cut di default
-  // 2) creare il messenger /physics/
-  // 3) inizializzare la configurazione di default
-}
+  // Impostare il livello di verbosità.
+  //
+  // Esempio:
+  // SetVerboseLevel(1);
 
-PhysicsList::~PhysicsList()
-{
-  // TODO: deallocare i costruttori di fisica e il messenger
-}
-
-void PhysicsList::BuildEMPhysics()
-{
   // TODO:
-  // scegliere qui tra modelli EM alternativi:
-  // - standard
-  // - standard_opt4
-  // - livermore
-  // - penelope
-}
+  // Impostare il cut di default.
+  //
+  // Esempio:
+  // defaultCutValue = 0.7 * mm;
 
-void PhysicsList::SetPreset(const G4String&)
-{
   // TODO:
-  // definire alcune configurazioni pronte all'uso per gli studenti
-}
+  // Registrare qui i moduli di fisica desiderati.
+  //
+  // Esempi:
+  // RegisterPhysics(new G4EmStandardPhysics());
+  // RegisterPhysics(new G4DecayPhysics());
+  // RegisterPhysics(new G4HadronPhysicsFTFP_BERT());
 
-void PhysicsList::SetEMModel(const G4String&)
-{
-  // TODO: cambiare il modello EM prima di /run/initialize
+  PrintConfiguration();
 }
 
 void PhysicsList::PrintConfiguration() const
 {
-  // TODO: stampare la configurazione attiva
-}
+  G4cout << G4endl;
+  G4cout << "============================================================" << G4endl;
+  G4cout << " PhysicsList template configuration" << G4endl;
+  G4cout << "============================================================" << G4endl;
+  G4cout << G4endl;
 
-void PhysicsList::ConstructParticle()
-{
-  // TODO: costruire le particelle necessarie
-}
-
-void PhysicsList::ConstructProcess()
-{
   // TODO:
-  // 1) AddTransportation()
-  // 2) processi EM
-  // 3) decadimenti
-  // 4) eventuale adronica
-  // 5) eventuale ottica
-}
-
-void PhysicsList::SetCuts()
-{
-  SetCutsWithDefault();
+  // Stampare qui la configurazione scelta, se utile.
 }

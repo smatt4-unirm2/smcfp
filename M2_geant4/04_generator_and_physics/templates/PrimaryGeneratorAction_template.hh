@@ -5,23 +5,23 @@
 
 class G4Event;
 class G4GeneralParticleSource;
-class EventAction;
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
 public:
-  explicit PrimaryGeneratorAction(EventAction* eventAction);
+  PrimaryGeneratorAction();
   ~PrimaryGeneratorAction() override;
 
   void GeneratePrimaries(G4Event* event) override;
 
 private:
-  // TODO: usare GPS al posto di G4ParticleGun
-  G4GeneralParticleSource* fGPS = nullptr;
+  // TODO:
+  // Scegliere qui il generatore primario.
+  //
+  // Esempi:
+  // G4ParticleGun* fGun = nullptr;
+  // G4GeneralParticleSource* fGPS = nullptr;
 
-  // TODO: salvare qui il puntatore all'EventAction per memorizzare
-  // energia, posizione e direzione del primario generato.
-  EventAction* fEventAction = nullptr;
 };
 
 #endif
