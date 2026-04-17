@@ -17,16 +17,11 @@ void EventAction::EndOfEventAction(const G4Event*)
 {
   // TODO:
   // passare qui i dati evento per evento alla RunAction
+  // includendo i dati del generatore
 }
 
 void EventAction::AddEdep(G4int, G4int, G4double)
 {
   // TODO:
   // sommare l'energia depositata nel cristallo corretto
-}
-
-void EventAction::SetPrimary(G4double, G4double, G4double, G4double, G4double, G4double)
-{
-  // TODO:
-  // salvare qui le informazioni del primario dell'evento corrente
 }

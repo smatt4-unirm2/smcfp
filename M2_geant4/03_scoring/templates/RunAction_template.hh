@@ -20,7 +20,13 @@ public:
 
   // TODO:
   // metodo da usare per trasferire i dati dell'evento al TTree
-  void FillEvent(const EventAction& eventAction);
+  void FillEvent(const EventAction& eventAction,
+                          G4double primaryEnergy,
+                          G4double primaryX0,
+                          G4double primaryY0,
+                          G4double primaryZ0,
+                          G4double primaryTheta,
+                          G4double primaryPhi);
 
 private:
   // TODO:

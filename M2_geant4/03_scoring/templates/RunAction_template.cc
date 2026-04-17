@@ -32,7 +32,13 @@ void RunAction::EndOfRunAction(const G4Run*)
   // scrivere il TTree e chiudere il file ROOT
 }
 
-void RunAction::FillEvent(const EventAction&)
+void RunAction::FillEvent(const EventAction& eventAction,
+                          G4double primaryEnergy,
+                          G4double primaryX0,
+                          G4double primaryY0,
+                          G4double primaryZ0,
+                          G4double primaryTheta,
+                          G4double primaryPhi)
 {
   // TODO:
   // copiare qui le variabili dell'evento nei buffer del tree e chiamare Fill()
