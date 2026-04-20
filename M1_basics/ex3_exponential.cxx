@@ -12,10 +12,10 @@
 #include "TStyle.h"
 #include "TTree.h"
 
-int main() {
-    constexpr int N_EVENTS = 100000;
-    constexpr double LAMBDA = 2.5;
-    constexpr int SEED = 2024;
+void ex3_exponential() {
+    int N_EVENTS = 100000;
+    double LAMBDA = 2.5;
+    int SEED = 2024;
 
     TRandom3 rng(SEED);
     const double tau = 1.0 / LAMBDA;
@@ -26,21 +26,17 @@ int main() {
     TFile fout("output_exponential.root", "RECREATE");
     if (fout.IsZombie()) {
         std::cerr << "Errore nell'apertura del file output_exponential.root\n";
-        return 1;
+        return;
     }
-
-    TTree tree("T_expo", "Valori campionati da distribuzione esponenziale");
-    double x = 0.0;
-    tree.Branch("x", &x, "x/D");
 
     std::vector<double> values;
     values.reserve(N_EVENTS);
 
     for (int i = 0; i < N_EVENTS; ++i) {
-        x = rng.Exp(tau);
+        double u = rng.Uniform(1e-10, 1.);
+        double x=-1/LAMBDA*TMath::Log(u);
         values.push_back(x);
         h_expo.Fill(x);
-        tree.Fill();
     }
 
     std::sort(values.begin(), values.end());
@@ -87,7 +83,6 @@ int main() {
     g_cdf_teorica.Draw("L SAME");
 
     h_expo.Write();
-    tree.Write();
     g_cdf_empirica.Write();
     g_cdf_teorica.Write();
     c_expo_fit.Write();
@@ -100,5 +95,5 @@ int main() {
     std::cout << "Media campionata: " << h_expo.GetMean() << " (atteso: " << 1.0 / LAMBDA << ")\n";
     std::cout << "Lambda atteso   : " << LAMBDA << "\n";
     std::cout << "Output scritto su: output_exponential.root\n";
-    return 0;
+    return;
 }

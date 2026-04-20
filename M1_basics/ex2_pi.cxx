@@ -11,10 +11,10 @@
 #include "TMath.h"
 #include "TStyle.h"
 
-int main() {
-    constexpr int N_TOTAL = 1000000;
-    constexpr int N_SCATTER_SAVE = 50000;
-    constexpr int SEED = 12345;
+void ex2_pi(){
+    int N_TOTAL = 1000000;
+    int N_SCATTER_SAVE = 50000;
+    int SEED = 12345;
 
     TRandom3 rng(SEED);
 
@@ -33,9 +33,9 @@ int main() {
     int nInside = 0;
 
     for (int i = 1; i <= N_TOTAL; ++i) {
-        const double x = rng.Uniform(-1.0, 1.0);
-        const double y = rng.Uniform(-1.0, 1.0);
-        const double r2 = x * x + y * y;
+        double x = rng.Uniform(-1.0, 1.0);
+        double y = rng.Uniform(-1.0, 1.0);
+        double r2 = x * x + y * y;
 
         if (r2 <= 1.0) {
             ++nInside;
@@ -45,8 +45,8 @@ int main() {
         }
 
         if (i >= 100 && (i % 1000 == 0 || i == N_TOTAL)) {
-            const double pi_est = 4.0 * static_cast<double>(nInside) / static_cast<double>(i);
-            const double diff_rel = std::abs(pi_est - TMath::Pi()) / TMath::Pi();
+            double pi_est = 4.0 * static_cast<double>(nInside) / static_cast<double>(i);
+            double diff_rel = std::abs(pi_est - TMath::Pi()) / TMath::Pi();
 
             vN.push_back(static_cast<double>(i));
             vPi.push_back(pi_est);
@@ -54,7 +54,7 @@ int main() {
         }
     }
 
-    const double pi_est = 4.0 * static_cast<double>(nInside) / static_cast<double>(N_TOTAL);
+    double pi_est = 4.0 * static_cast<double>(nInside) / static_cast<double>(N_TOTAL);
 
     std::cout << "=== Esercizio 2: Stima di pi ===\n";
     std::cout << "Punti totali         : " << N_TOTAL << "\n";
@@ -80,7 +80,7 @@ int main() {
     TFile fout("output_pi.root", "RECREATE");
     if (fout.IsZombie()) {
         std::cerr << "Errore nell'apertura del file output_pi.root\n";
-        return 1;
+        return;
     }
 
     TCanvas c_scatter("c_scatter_pi", "Punti nel quadrato", 900, 800);
@@ -111,6 +111,5 @@ int main() {
     c_conv.Write();
 
     fout.Close();
-    std::cout << "Output scritto su: output_pi.root\n";
-    return 0;
+    std::cout << "Output scritto su: output_pi.root, uscita con .q\n";
 }

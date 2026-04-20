@@ -6,18 +6,16 @@ M. Sorbara, T. Minniti, F. Palma
 
 Esercizi base per iniziare a familiarizzare con gli ambienti C++ applicando principi base dell'analisi Montecarlo.
 
-### Compilazione ed esecuzione
+### Esecuzione
 
 Aprire il terminale, entrare nella cartella `M1_basics` dove è presente l'esempio `ex1_generator.cxx`. 
-La compilazione è gestita da un `Makefile` che viene invocato con:
+Eseguire con 
 ```bash
-make 
+root -l ex1_generator.cxx
 ```
-e compila automaticamente tutti i file che si chiamano `*.cxx` e ne genera un file eseguibile.
-Per eseguire l'esempio lanciare:
-```bash
-./ex1_generator
-```
+che lancia automaticamente il codice e produce gli istogrammi.
+Usare `.q` per uscire.
+
 ---
 
 ## Esempio 1 — Generatori di numeri pseudo-random in ROOT
@@ -66,11 +64,7 @@ h_gauss_ranlux48	//distribuzione Gaussiana generata con **RanLux48**
 c_uniform_compare	//canvas confronto tra distribuzioni uniformi
 c_gauss_compare		//canvas confronto tra gaussiane
 ```
-### Esecuzione
 
-```bash
-./ex1_generator
-```
 Aprire il file ROOT:
 ```bash
 root -l output_generator.root
@@ -168,6 +162,8 @@ Per questo esercizio usare
 ```text
 λ = 2.5
 ```
+
+Altrimenti, cosa più utile didatticamente, usare il sampling della funzione inversa per ricostruire la distribuzione esponenziale.
 
 ### Obiettivo dell'esercizio
 
