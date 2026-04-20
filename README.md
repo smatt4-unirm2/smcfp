@@ -53,20 +53,6 @@ La repository è organizzata in tre sezioni principali:
 
 Gli esercizi sono organizzati per lezione e progettati per essere **incrementali**: il codice sviluppato nelle prime lezioni viene esteso e modificato nelle successive.
 
-```
-
-SMCFP_main
-|
-├── M1_basics
-│
-├── M2_geant4
-│ 		├── base
-│ 		└── full
-│
-└── M3_fluka
-		  ├── base
-		  └── full
-```
 ---
 
 # M1_basics
@@ -81,63 +67,13 @@ Questa cartella contiene esercizi introduttivi in **C++** utilizzati nella prima
 
 # M2_geant4
 
-Contiene il materiale relativo alle simulazioni con **Geant4**. Il lavoro è organizzato in due parti:
-
-## base
-
-Questa cartella contiene un **esempio minimale di Geant4**, derivato da uno degli esempi ufficiali. Questo esempio verrà utilizzato per:
-
-- familiarizzare con l'ambiente Geant4
-- visualizzare la geometria
-- modificare parametri base
-- eseguire simulazioni con macro
-
-## full
-
-Questa cartella contiene il **progetto completo sviluppato durante il corso**.
-
-Il progetto è basato su una versione estesa dell'esempio `B1` e rappresenta una simulazione semplificata di un **rivelatore per particelle**.
-Componenti principali del codice:
-
-- **DetectorConstruction**  
-  definizione della geometria del rivelatore
-
-- **PrimaryGeneratorAction**  
-  generazione delle particelle incidenti
-
-- **PhysicsList**  
-  definizione dei modelli fisici
-
-- **RunAction / EventAction / SteppingAction**  
-  gestione della simulazione e raccolta dei dati
+Contiene il materiale relativo alle simulazioni con **Geant4**.
 
 ---
 
 # M3_fluka
 
-Contiene gli esempi e gli esercizi relativi all'utilizzo di **FLUKA**. Il lavoro è organizzato in due parti:
-
-## base
-
-Contiene un **esempio minimale FLUKA** utilizzato per:
-
-- introdurre la struttura dei file di input
-- modificare l'interfaccia grafica **FLAIR**
-- visualizzare la geometria e i suoi errori
-- modificare parametri base dell'input
-
-## full
-
-Questa cartella contiene la simulazione completa sviluppata durante il corso.
-
-Il progetto consiste nella simulazione di un **fantoccio ad acqua irradiato con un fascio di particelle**, con l'obiettivo di calcolare il **profilo di dose**.
-
-Elementi principali della simulazione:
-
-- definizione della geometria del phantom
-- definizione dei materiali
-- definizione del fascio incidente
-- scoring della dose
+Contiene gli esempi e gli esercizi relativi all'utilizzo di **FLUKA**.
 
 ---
 
