@@ -11,9 +11,9 @@
 #include "TLegend.h"
 #include "TStyle.h"
 
-int main() {
-    constexpr int N_EVENTS = 100000;
-    constexpr unsigned int SEED = 42;
+void ex1_generator(){
+    int N_EVENTS = 100000;
+    unsigned int SEED = 42;
 
     TRandom3 rng3(SEED);
     TRandomRanlux48 ranlux48(SEED);
@@ -25,7 +25,6 @@ int main() {
     TH1D *h_gauss_ranlux48 = new TH1D("h_gauss_ranlux48", "Gaussiana N(0,1) con RanLux48;x;Conteggi", 120, -5.0, 5.0);
 
     TH2D *h2_corr = new TH2D("h2_corr", "Gaussian Correlation Plot; RanLux48; TRandom3", 120, -5, 5, 120, -5, 5); 
-
 
     for (int i = 0; i < N_EVENTS; ++i) {
         h_uniform_r3->Fill(rng3.Uniform(0.0, 1.0));
@@ -62,7 +61,7 @@ int main() {
     TFile *fout = new TFile("output_generator.root", "RECREATE");
     if (fout->IsZombie()) {
         std::cerr << "Errore: impossibile aprire output_generator.root\n";
-        return 1;
+        return;
     }
 
     h_uniform_r3->SetLineColor(kBlue + 2);
@@ -108,5 +107,4 @@ int main() {
     fout->Close();
 
     std::cout << "\nOutput scritto su: "<<fout->GetName()<<"\n";
-    return 0;
 }
