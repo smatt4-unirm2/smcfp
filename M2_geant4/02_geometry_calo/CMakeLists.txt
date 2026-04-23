@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(CaloCourse)
+project(CaloCourseGeometry)
 
 find_package(Geant4 REQUIRED ui_all vis_all)
 include(${Geant4_USE_FILE})
