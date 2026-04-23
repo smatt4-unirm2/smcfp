@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
-project(CaloCourseScoring)
+project(CaloCourseGeneratorAndPhysics)
 
 find_package(Geant4 REQUIRED ui_all vis_all)
-find_package(ROOT REQUIRED COMPONENTS Core RIO Tree)
+find_package(ROOT REQUIRED COMPONENTS Core RIO Tree Hist)
 
 include(${Geant4_USE_FILE})
 include(${ROOT_USE_FILE})

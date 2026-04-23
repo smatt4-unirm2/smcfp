@@ -2,6 +2,7 @@
 
 #include "EventAction.hh"
 
+#include "G4GenericMessenger.hh"
 #include "G4Run.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ios.hh"
@@ -9,10 +10,24 @@
 #include "TFile.h"
 #include "TTree.h"
 
-RunAction::RunAction() = default;
+RunAction::RunAction()
+{
+  // --------------------------------------------------------------------------
+  // UIMessenger minimale per il nome del file di output.
+  // --------------------------------------------------------------------------
+  // Esempio d'uso da macro:
+  //   /analysis/setFileName prova.root
+  //
+  // In assenza del comando si usa il fallback definito in fOutputFileName.
+  // --------------------------------------------------------------------------
+  fMessenger = new G4GenericMessenger(this, "/analysis/", "Analysis control");
+  fMessenger->DeclareMethod("setFileName", &RunAction::SetOutputFileName,
+                            "Set ROOT output file name.");
+}
 
 RunAction::~RunAction()
 {
+  delete fMessenger;
   delete fOutputFile;
 }
 
@@ -23,11 +38,10 @@ void RunAction::BeginOfRunAction(const G4Run*)
 
 void RunAction::EndOfRunAction(const G4Run*)
 {
-
   G4cout << G4endl;
   G4cout << "============================================================" << G4endl;
-  G4cout << ">>> End of run " << G4endl;
-  G4cout << ">>> Writing and closing output file" << G4endl;
+  G4cout << ">>> End of run" << G4endl;
+  G4cout << ">>> Writing and closing output file: " << fOutputFileName << G4endl;
   G4cout << "============================================================" << G4endl;
   G4cout << G4endl;
 
@@ -48,7 +62,6 @@ void RunAction::FillEvent(const EventAction& eventAction,
 {
   ResetBranches();
 
-  // Copia dell'energia depositata dall'accumulatore evento alle branch del tree.
   const auto& edep = eventAction.GetEdep();
   for (G4int iPlane = 0; iPlane < kNPlanes; ++iPlane) {
     for (G4int iBar = 0; iBar < kNBars; ++iBar) {
@@ -56,7 +69,6 @@ void RunAction::FillEvent(const EventAction& eventAction,
     }
   }
 
-  // Copia delle variabili del primario lette dal G4Event.
   fPrimaryEnergy = primaryEnergy / MeV;
   fPrimaryX0     = primaryX0 / mm;
   fPrimaryY0     = primaryY0 / mm;
@@ -69,26 +81,24 @@ void RunAction::FillEvent(const EventAction& eventAction,
 
 void RunAction::Book()
 {
-  // Ricreiamo il file a ogni run.
   delete fOutputFile;
-  fOutputFile = TFile::Open("scoring_calo.root", "RECREATE");
-  
+  fOutputFile = nullptr;
+
+  fOutputFile = TFile::Open(fOutputFileName.c_str(), "RECREATE");
+
   G4cout << G4endl;
   G4cout << "============================================================" << G4endl;
-  G4cout << ">>> Begin of run " << G4endl;
+  G4cout << ">>> Begin of run" << G4endl;
   G4cout << ">>> Opening output file: " << fOutputFile->GetName() << G4endl;
   G4cout << "============================================================" << G4endl;
   G4cout << G4endl;
 
   fTree = new TTree("t", "Event-by-event calorimeter scoring");
 
-  // Branch 2D: Edep[piano][cristallo]
-  // Convenzione:
-  //   - piano    = 0,...,11 lungo +z
-  //   - cristallo = 0,...,15 lungo +x nei piani X, lungo +y nei piani Y
+  // Energia depositata: Edep[piano][cristallo]
   fTree->Branch("caloEdep", fEdep, "caloEdep[12][16]/D");
 
-  // Variabili del primario.
+  // Variabili del primario effettivamente generate dal GPS.
   fTree->Branch("genEnergy", &fPrimaryEnergy, "genEnergy/D");
   fTree->Branch("genX",      &fPrimaryX0,     "genX/D");
   fTree->Branch("genY",      &fPrimaryY0,     "genY/D");

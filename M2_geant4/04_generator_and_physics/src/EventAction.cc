@@ -19,6 +19,8 @@ void EventAction::BeginOfEventAction(const G4Event*)
 
 void EventAction::EndOfEventAction(const G4Event* event)
 {
+  // Alla fine dell'evento leggiamo i parametri del primario direttamente
+  // dall'oggetto G4Event, che contiene il vertice realmente generato dal GPS.
   G4double primaryEnergy = 0.0;
   G4double primaryX0 = 0.0;
   G4double primaryY0 = 0.0;
@@ -44,6 +46,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
     }
   }
 
+  // Passiamo a RunAction lo scoring e i parametri del primario.
   fRunAction->FillEvent(*this,
                         primaryEnergy,
                         primaryX0,
