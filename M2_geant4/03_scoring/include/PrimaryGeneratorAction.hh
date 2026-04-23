@@ -4,7 +4,6 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 
 class G4ParticleGun;
-class G4Event;
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
@@ -17,5 +16,4 @@ public:
 private:
   G4ParticleGun* fGun = nullptr;
 };
-
 #endif
