@@ -71,7 +71,7 @@ Punto centrale dove registrare nuove azioni.
 
 ---
 
-### ➕ Estensione: EventAction e SteppingAction
+### 3.5 EventAction e SteppingAction
 
 Per introdurre lo **scoring**, sono state aggiunte due classi:
 
