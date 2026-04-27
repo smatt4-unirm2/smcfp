@@ -250,47 +250,25 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   //                 CopyNumber,
   //                 fCheckOverlaps);  //funzione per il controllo di overlap
 
-
-
-  // --------------------------------------------------------------------------
-  // PIANO Y
-  // --------------------------------------------------------------------------
-  // In questo piano le barre sono ruotate di 90 gradi attorno a z.
-  // La segmentazione è lungo y.
-  // --------------------------------------------------------------------------
-  auto planeYS
-    = new G4Box("PlaneY",
-                planeSizeXY / 2.0,
-                planeSizeXY / 2.0,
-                planeThickness / 2.0);
-
-  auto planeYLV
-    = new G4LogicalVolume(planeYS,
-                          fGapMaterial,
-                          "PlaneYLV");
-
-  fRotZ90 = new G4RotationMatrix();
-  fRotZ90->rotateZ(90.0 * deg);
-
-  // Stessa cosa di sopra per il piano Y, unica differenza è di ruotare il cristallo
-  // di 90 gradi usando una matrice di rotazione definita sopra
-
-
   // --------------------------------------------------------------------------
   // POSIZIONAMENTO DEI PIANI NEL CALORIMETRO
   // --------------------------------------------------------------------------
   // I piani vengono alternati:
   //   piano 0 -> X
-  //   piano 1 -> Y
+  //   piano 1 -> Y (X ruotato di 90 gradi)
   //   piano 2 -> X
   //   ...
   // --------------------------------------------------------------------------
   
+
+  fRotZ90 = new G4RotationMatrix();
+  fRotZ90->rotateZ(90.0 * deg);
+
   // A questo punto di nuovo con un ciclo for si possono piazzare i piani nel calorimetro
   // Dato che i piani andranno alternati, si può usare un G4LogicalVolume all'interno del loop
-  // Che selezioni PlaneX sui piani pari e PlaneY sui piani dispari 
+  // Che selezioni rotazione 0 sui piani pari e 90 deg sui piani dispari 
   // (e usare una logica similare per il nome):
-  // G4LogicalVolume* currentPlaneLV = (iPlane % 2 == 0) ? planeXLV : planeYLV;
+  // G4RotationMatrix *currentRot = (iPlane % 2 == 0) ? nullptr : fRotZ90;
   // G4String currentPlaneName       = (iPlane % 2 == 0) ? "PlaneX"  : "PlaneY";
   // Anche qui, usare l'indice del for come CopyNumber nel placement
 
