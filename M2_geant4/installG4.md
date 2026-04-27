@@ -29,7 +29,7 @@ cd geant4-v11.4.1-build
 
 Ora lanciare il comando `cmake` con le opzioni di compilazione:
 ```bash
-cmake -DCMAKE_INSTALL_PREFIX=/path/to/geant4-v11.4.1-install /path/to/geant4-v11.4.1 -DGEANT4_INSTALL_DATA=ON -DGEANT4_BUILD_MULTITHREADED=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_QT_QT5 -DGEANT4_USE_SYSTEM_EXPAT=OFF
+cmake -DCMAKE_INSTALL_PREFIX=/path/to/geant4-v11.4.1-install /path/to/geant4-v11.4.1 -DGEANT4_INSTALL_DATA=ON -DGEANT4_BUILD_MULTITHREADED=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_QT_QT5=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF
 ```
 
 Ora, se tutte le dipendenze sono presenti il comando dovrebbe procedere senza problemi. Se invece dà errore perché manca qualcosa allora procedere ad installare le dipendenze (in questo è utile cercare l'errore su google per vedere come installare le librerie mancanti). Probabilmente una libreria che manca è quella grafica che si installa con 
