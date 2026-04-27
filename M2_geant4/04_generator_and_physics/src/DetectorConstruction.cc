@@ -270,54 +270,24 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   }
 
   // --------------------------------------------------------------------------
-  // PIANO Y
-  // --------------------------------------------------------------------------
-  // In questo piano le barre sono ruotate di 90 gradi attorno a z.
-  // La segmentazione è lungo y.
-  // --------------------------------------------------------------------------
-  auto planeYS
-    = new G4Box("PlaneY",
-                planeSizeXY / 2.0,
-                planeSizeXY / 2.0,
-                planeThickness / 2.0);
-
-  auto planeYLV
-    = new G4LogicalVolume(planeYS,
-                          fGapMaterial,
-                          "PlaneYLV");
-
-  fRotZ90 = new G4RotationMatrix();
-  fRotZ90->rotateZ(90.0 * deg);
-
-  for (G4int iBar = 0; iBar < fNofBarsPerPlane; ++iBar) {
-    G4double yPos =
-      -planeSizeTransverse / 2.0 + fBarSizeX / 2.0 + iBar * (fBarSizeX + fGapSize);
-
-    new G4PVPlacement(fRotZ90,
-                      G4ThreeVector(0., yPos, 0.),
-                      crystalLV,
-                      "CrystalY",
-                      planeYLV,
-                      false,
-                      iBar,
-                      fCheckOverlaps);
-  }
-
-  // --------------------------------------------------------------------------
   // POSIZIONAMENTO DEI PIANI NEL CALORIMETRO
   // --------------------------------------------------------------------------
   // I piani vengono alternati:
   //   piano 0 -> X
-  //   piano 1 -> Y
+  //   piano 1 -> Y (rot 90 deg)
   //   piano 2 -> X
   //   ...
   // --------------------------------------------------------------------------
+
+  fRotZ90 = new G4RotationMatrix();
+  fRotZ90->rotateZ(90.0 * deg);
+
   for (G4int iPlane = 0; iPlane < fNofPlanes; ++iPlane) {
 
     G4double zPos =
       -calorSizeZ / 2.0 + planeThickness / 2.0 + iPlane * (planeThickness + fGapSize);
 
-    G4LogicalVolume* currentPlaneLV = (iPlane % 2 == 0) ? planeXLV : planeYLV;
+    G4RotationMatrix* currentRot = (iPlane % 2 == 0) ? nullptr : fRotZ90;
     G4String currentPlaneName       = (iPlane % 2 == 0) ? "PlaneX"  : "PlaneY";
 
     new G4PVPlacement(0,
@@ -354,7 +324,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   worldLV->SetVisAttributes(G4VisAttributes::GetInvisible());
   calorimeterLV->SetVisAttributes(G4VisAttributes::GetInvisible());
   planeXLV->SetVisAttributes(G4VisAttributes::GetInvisible());
-  planeYLV->SetVisAttributes(G4VisAttributes::GetInvisible());
 
   auto crystalVisAtt = new G4VisAttributes(G4Colour(0.35, 0.85, 1.00, 0.10));
   crystalVisAtt->SetVisibility(true);
