@@ -51,13 +51,13 @@ void DetectorConstruction::DefineMaterials()
   // - aria anche per i gap tra cristalli e tra piani;
   // - PbWO4 per i cristalli del calorimetro.
   //
-  // Il PbWO4 viene preso dal database NIST di Geant4.
   // --------------------------------------------------------------------------
-  auto nistManager = G4NistManager::Instance();
+  
+  // TODO
+  // Definire qui i materiali, vuoto come Galactic
+  // Aria usando la composizione fractional mass
+  // PbWO4 dal NIST database
 
-  fWorldMaterial   = nistManager->FindOrBuildMaterial("G4_AIR");
-  fGapMaterial     = nistManager->FindOrBuildMaterial("G4_AIR");
-  fCrystalMaterial = nistManager->FindOrBuildMaterial("G4_PbWO4");
 
   if (fUseOpticalProperties) {
     DefinePbWO4OpticalProperties();
@@ -73,8 +73,7 @@ void DetectorConstruction::DefinePbWO4OpticalProperties()
   // --------------------------------------------------------------------------
   // PROPRIETA' OTTICHE DEL PbWO4
   // --------------------------------------------------------------------------
-  // Questa parte è pensata per uso didattico:
-  // consente di associare al materiale una MaterialPropertiesTable
+  // Questa parte consente di associare al materiale una MaterialPropertiesTable
   // per studiare propagazione di fotoni ottici e scintillazione.
   //
   // I valori sono semplici e ragionevoli per un esempio introduttivo.
@@ -202,41 +201,20 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   // --------------------------------------------------------------------------
   // Volume madre che contiene tutti i 12 piani.
   // --------------------------------------------------------------------------
-  auto calorimeterS
-    = new G4Box("Calorimeter",
-                calorSizeX / 2.0,
-                calorSizeY / 2.0,
-                calorSizeZ / 2.0);
 
-  auto calorimeterLV
-    = new G4LogicalVolume(calorimeterS,
-                          fGapMaterial,
-                          "Calorimeter");
-
-  new G4PVPlacement(0,
-                    G4ThreeVector(),
-                    calorimeterLV,
-                    "Calorimeter",
-                    worldLV,
-                    false,
-                    0,
-                    fCheckOverlaps);
+  // TODO
+  // Creare qui un volume fatto di aria che sia il "contenitore" dei piani
+  // con i cristalli
 
   // --------------------------------------------------------------------------
   // CRISTALLO BASE
   // --------------------------------------------------------------------------
   // Questo è il "mattone" elementare del calorimetro.
   // --------------------------------------------------------------------------
-  auto crystalS
-    = new G4Box("Crystal",
-                fBarSizeX / 2.0,
-                fBarSizeY / 2.0,
-                fBarSizeZ / 2.0);
+  
+  // TODO:
+  // Creare qui i volumi solido e logico del cristallo, il placement verrà fatto sotto
 
-  auto crystalLV
-    = new G4LogicalVolume(crystalS,
-                          fCrystalMaterial,
-                          "CrystalLV");
 
   // --------------------------------------------------------------------------
   // PIANO X
@@ -255,19 +233,24 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                           fGapMaterial,
                           "PlaneXLV");
 
-  for (G4int iBar = 0; iBar < fNofBarsPerPlane; ++iBar) {
-    G4double xPos =
-      -planeSizeTransverse / 2.0 + fBarSizeX / 2.0 + iBar * (fBarSizeX + fGapSize);
 
-    new G4PVPlacement(0,
-                      G4ThreeVector(xPos, 0., 0.),
-                      crystalLV,
-                      "CrystalX",
-                      planeXLV,
-                      false,
-                      iBar,
-                      fCheckOverlaps);
-  }
+  // TODO:
+  // Qui andranno piazzati i 16 cristalli nel piano. Ogni cristallo dovrà usare 
+  // planeXLV come mother volume. 
+  // Si può usare un ciclo for e "riciclare" lo stesso logical volume del cristallo
+  // Il CopyNumber dovrà essere associato all'ID della barra in modo da poterlo poi 
+  // utilizzare in fase di scoring  
+  // Sintassi di G4PVPlacement:
+  // new G4PVPlacement(0,
+  //                 G4ThreeVector(xPos, yPos, zPos),
+  //                 VolumeLogico,
+  //                 "Nome",
+  //                 VolumeMadre,
+  //                 false,       //false per "nessuna operazione boleana"
+  //                 CopyNumber,
+  //                 fCheckOverlaps);  //funzione per il controllo di overlap
+
+
 
   // --------------------------------------------------------------------------
   // PIANO Y
@@ -289,19 +272,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   fRotZ90 = new G4RotationMatrix();
   fRotZ90->rotateZ(90.0 * deg);
 
-  for (G4int iBar = 0; iBar < fNofBarsPerPlane; ++iBar) {
-    G4double yPos =
-      -planeSizeTransverse / 2.0 + fBarSizeX / 2.0 + iBar * (fBarSizeX + fGapSize);
+  // Stessa cosa di sopra per il piano Y, unica differenza è di ruotare il cristallo
+  // di 90 gradi usando una matrice di rotazione definita sopra
 
-    new G4PVPlacement(fRotZ90,
-                      G4ThreeVector(0., yPos, 0.),
-                      crystalLV,
-                      "CrystalY",
-                      planeYLV,
-                      false,
-                      iBar,
-                      fCheckOverlaps);
-  }
 
   // --------------------------------------------------------------------------
   // POSIZIONAMENTO DEI PIANI NEL CALORIMETRO
@@ -312,23 +285,15 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   //   piano 2 -> X
   //   ...
   // --------------------------------------------------------------------------
-  for (G4int iPlane = 0; iPlane < fNofPlanes; ++iPlane) {
+  
+  // A questo punto di nuovo con un ciclo for si possono piazzare i piani nel calorimetro
+  // Dato che i piani andranno alternati, si può usare un G4LogicalVolume all'interno del loop
+  // Che selezioni PlaneX sui piani pari e PlaneY sui piani dispari 
+  // (e usare una logica similare per il nome):
+  // G4LogicalVolume* currentPlaneLV = (iPlane % 2 == 0) ? planeXLV : planeYLV;
+  // G4String currentPlaneName       = (iPlane % 2 == 0) ? "PlaneX"  : "PlaneY";
+  // Anche qui, usare l'indice del for come CopyNumber nel placement
 
-    G4double zPos =
-      -calorSizeZ / 2.0 + planeThickness / 2.0 + iPlane * (planeThickness + fGapSize);
-
-    G4LogicalVolume* currentPlaneLV = (iPlane % 2 == 0) ? planeXLV : planeYLV;
-    G4String currentPlaneName       = (iPlane % 2 == 0) ? "PlaneX"  : "PlaneY";
-
-    new G4PVPlacement(0,
-                      G4ThreeVector(0., 0., zPos),
-                      currentPlaneLV,
-                      currentPlaneName,
-                      calorimeterLV,
-                      false,
-                      iPlane,
-                      fCheckOverlaps);
-  }
 
   // --------------------------------------------------------------------------
   // STAMPA PARAMETRI
