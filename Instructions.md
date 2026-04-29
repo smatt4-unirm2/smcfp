@@ -91,32 +91,35 @@ git push
 ```
 
 ---
-
-## Creazione assignment GitHub Classroom
-
-1. Assicurarsi che `main` contenga solo il materiale da distribuire
-2. Creare un assignment in GitHub Classroom
-3. Usare questa repository come starter code
-
----
-
-## Note importanti
-
-- Non inserire mai le soluzioni nel branch `main`
-- Non lavorare direttamente su `main`
-- Usare sempre `staff`
-- Controllare sempre il branch:
-
-```bash
-git branch
-```
-
----
-
 ## Riepilogo
 
 ```bash
 git checkout main
 git checkout staff -- <cartella>
 git commit -m "Release"
+```
+
+---
+
+# Accesso alle macchine:
+
+Accedere tramite browser andando su classrooms.rmlab.infn.it e inserendo le credenziali della webmail INFN (per utenti esterni le credenziali arrivate via email).
+Una volta entrati fare il source delle variabili d'ambiente
+```bash
+source /data-labs/C2602/setenv.sh
+```
+
+Per entrare via ssh (solo da rete INFNdot1x):
+```bash
+ssh -XY utente@c2602-01.classrooms.rmlab.infn.it
+```
+
+Per copiare con `scp`:
+
+```bash
+#dal pc alla macchina remota
+scp /path/al/file utente@c2602-01.classrooms.rmlab.infn.it:/home/utente/path
+
+#dalla macchina al pc locale
+scp utente@c2602-01.classrooms.rmlab.infn.it:/home/utente/path /path/al/file
 ```
