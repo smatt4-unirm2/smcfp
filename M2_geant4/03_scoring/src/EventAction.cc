@@ -14,7 +14,11 @@ void EventAction::BeginOfEventAction(const G4Event*)
 {
   // All'inizio di ogni evento azzeriamo l'accumulatore dell'energia
   // depositata e le variabili del primario.
-  Reset();
+  for (G4int iPlane = 0; iPlane < kNPlanes; ++iPlane) {
+    for (G4int iBar = 0; iBar < kNBars; ++iBar) {
+      fEdep[iPlane][iBar] = 0.0;
+    }
+  }
 }
 
 void EventAction::EndOfEventAction(const G4Event* event)
@@ -64,13 +68,4 @@ void EventAction::AddEdep(G4int plane, G4int crystal, G4double edep)
   }
 
   fEdep[plane][crystal] += edep;
-}
-
-void EventAction::Reset()
-{
-  for (G4int iPlane = 0; iPlane < kNPlanes; ++iPlane) {
-    for (G4int iBar = 0; iBar < kNBars; ++iBar) {
-      fEdep[iPlane][iBar] = 0.0;
-    }
-  }
 }

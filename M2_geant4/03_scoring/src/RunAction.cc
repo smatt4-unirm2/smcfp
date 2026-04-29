@@ -18,7 +18,34 @@ RunAction::~RunAction()
 
 void RunAction::BeginOfRunAction(const G4Run*)
 {
-  Book();
+  // Ricreiamo il file a ogni run.
+  delete fOutputFile;
+  fOutputFile = TFile::Open("scoring_calo.root", "RECREATE");
+  
+  G4cout << G4endl;
+  G4cout << "============================================================" << G4endl;
+  G4cout << ">>> Begin of run " << G4endl;
+  G4cout << ">>> Opening output file: " << fOutputFile->GetName() << G4endl;
+  G4cout << "============================================================" << G4endl;
+  G4cout << G4endl;
+
+  fTree = new TTree("t", "Event-by-event calorimeter scoring");
+
+  // Branch 2D: Edep[piano][cristallo]
+  // Convenzione:
+  //   - piano    = 0,...,11 lungo +z
+  //   - cristallo = 0,...,15 lungo +x nei piani X, lungo +y nei piani Y
+  fTree->Branch("caloEdep", fEdep, "caloEdep[12][16]/D");
+
+  // Variabili del primario.
+  fTree->Branch("genEnergy", &fPrimaryEnergy, "genEnergy/D");
+  fTree->Branch("genX",      &fPrimaryX0,     "genX/D");
+  fTree->Branch("genY",      &fPrimaryY0,     "genY/D");
+  fTree->Branch("genZ",      &fPrimaryZ0,     "genZ/D");
+  fTree->Branch("genTheta",  &fPrimaryTheta,  "genTheta/D");
+  fTree->Branch("genPhi",    &fPrimaryPhi,    "genPhi/D");
+
+  ResetBranches();
 }
 
 void RunAction::EndOfRunAction(const G4Run*)
@@ -65,38 +92,6 @@ void RunAction::FillEvent(const EventAction& eventAction,
   fPrimaryPhi    = primaryPhi / deg;
 
   fTree->Fill();
-}
-
-void RunAction::Book()
-{
-  // Ricreiamo il file a ogni run.
-  delete fOutputFile;
-  fOutputFile = TFile::Open("scoring_calo.root", "RECREATE");
-  
-  G4cout << G4endl;
-  G4cout << "============================================================" << G4endl;
-  G4cout << ">>> Begin of run " << G4endl;
-  G4cout << ">>> Opening output file: " << fOutputFile->GetName() << G4endl;
-  G4cout << "============================================================" << G4endl;
-  G4cout << G4endl;
-
-  fTree = new TTree("t", "Event-by-event calorimeter scoring");
-
-  // Branch 2D: Edep[piano][cristallo]
-  // Convenzione:
-  //   - piano    = 0,...,11 lungo +z
-  //   - cristallo = 0,...,15 lungo +x nei piani X, lungo +y nei piani Y
-  fTree->Branch("caloEdep", fEdep, "caloEdep[12][16]/D");
-
-  // Variabili del primario.
-  fTree->Branch("genEnergy", &fPrimaryEnergy, "genEnergy/D");
-  fTree->Branch("genX",      &fPrimaryX0,     "genX/D");
-  fTree->Branch("genY",      &fPrimaryY0,     "genY/D");
-  fTree->Branch("genZ",      &fPrimaryZ0,     "genZ/D");
-  fTree->Branch("genTheta",  &fPrimaryTheta,  "genTheta/D");
-  fTree->Branch("genPhi",    &fPrimaryPhi,    "genPhi/D");
-
-  ResetBranches();
 }
 
 void RunAction::ResetBranches()

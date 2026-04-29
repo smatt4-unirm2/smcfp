@@ -30,7 +30,6 @@ public:
                G4double primaryPhi);
 
 private:
-  void Book();
   void ResetBranches();
 
 private:
