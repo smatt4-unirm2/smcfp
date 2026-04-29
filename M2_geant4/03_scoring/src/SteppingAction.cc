@@ -30,7 +30,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
   // Lo scoring deve essere fatto solo nei cristalli.
   const G4String& volumeName = volume->GetName();
-  if (volumeName != "CrystalX" && volumeName != "CrystalY") {
+  if (volumeName != "CrystalX") {
     return;
   }
 
@@ -39,8 +39,8 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
   //   depth 1 -> piano che contiene il cristallo
   //   depth 2 -> calorimetro
   // possiamo ricostruire gli indici direttamente dai copy number.
-  const G4int crystalID = touchable->GetCopyNumber(0);
-  const G4int planeID   = touchable->GetCopyNumber(1);
+  const G4int crystalID = touchable->GetCopyNumber(0); //Corrisponde a iBar nel loop del DetectorConstruction
+  const G4int planeID   = touchable->GetCopyNumber(1); //Corrisponde a iPlane nel loop del DetectorConstruction
 
   fEventAction->AddEdep(planeID, crystalID, edep);
 }
