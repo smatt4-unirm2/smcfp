@@ -289,22 +289,136 @@ La geometria (`DetectorConstruction`) rimane invariata.
 
 ---
 
-## Esercizi proposti
+## Macro ROOT di analisi
 
-### Esercizio 1 - Energia totale nel calorimetro
-Aggiungere una variabile scalare che contenga la somma di tutti gli elementi di `Edep[12][16]` e salvarla direttamente nel tree.
+Oltre al controllo diretto del `TTree` da prompt ROOT, l'esempio include una macro di analisi più completa:
 
-### Esercizio 2 - Profilo longitudinale
-Salvare anche un array monodimensionale `EdepPlane[12]` che contenga, per ogni piano, la somma dell'energia depositata in tutti i suoi cristalli.
+```txt
+analysis_calo.C
+```
 
-### Esercizio 3 - Profilo trasverso
-Costruire, in analisi ROOT, la distribuzione dell'energia depositata per indice di cristallo separando i piani X dai piani Y.
+La macro legge il file ROOT prodotto dalla simulazione, recupera il tree `t` e costruisce alcune visualizzazioni utili per interpretare il contenuto fisico dello scoring.
 
-### Esercizio 4 - Particelle diverse
-Modificare il generatore primario per confrontare elettroni, fotoni e muoni, osservando come cambia la distribuzione di energia depositata nel calorimetro.
+La macro può essere eseguita da ROOT con:
 
-### Esercizio 5 - Angoli del fascio
-Rendere non nullo l'angolo del fascio e studiare come cambia la mappa `Edep[piano][cristallo]`.
+```bash
+root -l analysis_calo.C
+```
 
-### Esercizio 6 - Unità di misura
-Modificare il codice per salvare l'energia in `keV` anziché in `MeV`, facendo attenzione alla coerenza tra simulazione e analisi.
+oppure, specificando esplicitamente il file da analizzare:
+
+```cpp
+root -l
+.L analysis_calo.C
+analysis_calo("calo_scoring.root")
+```
+
+Il nome del file passato alla funzione deve coincidere con il file ROOT effettivamente prodotto dalla simulazione.
+
+---
+
+### Controlli sul generatore primario
+
+La prima parte della macro visualizza le variabili salvate dal generatore primario:
+
+- distribuzione dell'energia generata;
+- distribuzione spaziale iniziale nel piano `x-y`;
+- distribuzione dell'angolo polare `theta`;
+- distribuzione dell'angolo azimutale `phi`.
+
+Questi istogrammi sono utili per verificare che il fascio simulato corrisponda alla configurazione attesa.
+
+---
+
+### Energia totale depositata
+
+La macro costruisce un istogramma dell'energia totale depositata evento per evento:
+
+```cpp
+TH1D* hTotE
+```
+
+Per ogni evento, tutti gli elementi della matrice
+
+```cpp
+caloEdep[12][16]
+```
+
+vengono sommati, il risultato rappresenta l'energia totale rilasciata nel calorimetro in un singolo evento.
+
+---
+
+### Profilo longitudinale dello sciame
+
+La macro calcola anche l'energia media depositata in ciascun piano:
+
+```cpp
+TH1D* hPlane
+```
+
+Per ogni evento, l'energia dei 16 cristalli appartenenti allo stesso piano viene sommata. Successivamente, il contenuto dell'istogramma viene normalizzato al numero totale di eventi. Il risultato è una stima del profilo longitudinale medio dello sciame.
+
+---
+
+### Distribuzione laterale dello sciame
+
+La macro studia anche la distribuzione laterale dell'energia nei cristalli di ciascun piano.
+
+Per ogni piano e per ogni evento vengono calcolate due quantità:
+
+```cpp
+hSigmaVsPlane
+hNhitsVsPlane
+```
+
+La prima rappresenta una larghezza laterale media dello sciame, calcolata come deviazione standard pesata con l'energia depositata nei cristalli. La seconda rappresenta il numero medio di cristalli colpiti per piano, usando una soglia minima di energia `threshold = 0.1 MeV`
+
+---
+
+### Mappe 2D dei piani pari e dispari
+
+Poiché la geometria del calorimetro alterna piani con barre orientate lungo direzioni diverse, la macro costruisce due mappe 2D separate:
+
+```cpp
+TH2D* hMapEven
+TH2D* hMapOdd
+```
+
+I piani pari e dispari vengono trattati separatamente:
+
+- i piani pari rappresentano una proiezione trasversale;
+- i piani dispari rappresentano la proiezione ortogonale.
+
+Le mappe mostrano l'energia media depositata in funzione di:
+
+- indice del cristallo;
+- indice del piano.
+
+---
+
+### Pseudo-ricostruzione 3D dello sciame
+
+L'ultima parte della macro costruisce una visualizzazione tridimensionale approssimata dello sciame:
+
+```cpp
+TH3D* h3_voxel
+```
+
+La ricostruzione usa coppie di piani consecutivi:
+
+- un piano pari;
+- il piano dispari successivo.
+
+Poiché i due piani misurano proiezioni trasversali ortogonali, la macro combina le energie medie dei due piani per costruire una distribuzione voxelizzata:
+
+```cpp
+E3 = Ey * Ez
+```
+
+Questa non è una ricostruzione calorimetrica rigorosa, ma solo una visualizzazione.
+Il grafico finale viene disegnato con:
+
+```cpp
+h3_voxel->Draw("BOX2Z");
+```
+
