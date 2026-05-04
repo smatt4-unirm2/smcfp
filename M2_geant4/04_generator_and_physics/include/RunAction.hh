@@ -5,6 +5,7 @@
 #include "globals.hh"
 
 class G4Run;
+class G4GenericMessenger;
 class TFile;
 class TTree;
 class EventAction;
@@ -29,10 +30,22 @@ public:
                G4double primaryTheta,
                G4double primaryPhi);
 
+  // Nome del file di output configurabile da macro.
+  void SetOutputFileName(const G4String& fileName) { fOutputFileName = fileName; }
+  const G4String& GetOutputFileName() const { return fOutputFileName; }
+
 private:
+  void Book();
   void ResetBranches();
 
 private:
+  // Messenger minimale per poter fare, da macro:
+  //   /analysis/setFileName mio_output.root
+  G4GenericMessenger* fMessenger = nullptr;
+
+  // Nome di default usato se l'utente non imposta nulla da macro.
+  G4String fOutputFileName = "scoring_calo.root";
+
   TFile* fOutputFile = nullptr;
   TTree* fTree = nullptr;
 

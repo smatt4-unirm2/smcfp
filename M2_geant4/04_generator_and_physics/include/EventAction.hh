@@ -24,6 +24,9 @@ public:
   const G4double (&GetEdep() const)[kNPlanes][kNBars] { return fEdep; }
 
 private:
+  void Reset();
+
+private:
   RunAction* fRunAction = nullptr;
 
   // Energia depositata in ciascun cristallo dell'evento corrente.

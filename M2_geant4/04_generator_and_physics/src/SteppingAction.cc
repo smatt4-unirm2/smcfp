@@ -20,22 +20,27 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
   // Usiamo il volume fisico di pre-step per capire in quale volume si trova
   // la particella all'inizio dello step.
-
-  //Ricava il volume dal pre-step-point
+  const auto* prePoint = step->GetPreStepPoint();
+  const auto* touchable = prePoint->GetTouchable();
+  const auto* volume = touchable->GetVolume();
 
   if (volume == nullptr) {
     return;
   }
 
-  // Lo scoring deve essere fatto solo nei cristalli
-  // Quindi mettiamo la condizione di essere nel cristallo
+  // Lo scoring deve essere fatto solo nei cristalli.
+  const G4String& volumeName = volume->GetName();
+  if (volumeName != "CrystalX" && volumeName != "CrystalY") {
+    return;
+  }
 
   // Grazie alla gerarchia della geometria:
   //   depth 0 -> cristallo corrente
   //   depth 1 -> piano che contiene il cristallo
   //   depth 2 -> calorimetro
   // possiamo ricostruire gli indici direttamente dai copy number.
-  // poi chiamiamo la funzione per accumulare l'energia depositata
+  const G4int crystalID = touchable->GetCopyNumber(0);
+  const G4int planeID   = touchable->GetCopyNumber(1);
+
+  fEventAction->AddEdep(planeID, crystalID, edep);
 }
-
-

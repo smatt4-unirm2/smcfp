@@ -1,0 +1,35 @@
+# -----------------------------------------------------------------------------
+# Distribuzione piatta, spettro energetico da istogramma e distribuzione angolare cos(theta)
+# -----------------------------------------------------------------------------
+# Questa macro usa:
+# - una distribuzione spaziale piatta
+# - uno spettro energetico arbitrario da file ASCII
+# - una distribuzione angolare cos(theta)
+# -----------------------------------------------------------------------------
+
+/run/initialize
+/analysis/setFileName electron_spectrum_cos.root
+
+/random/setSeeds 24680 13579
+
+/gps/particle e-
+
+# Source Position
+/gps/pos/type Plane
+/gps/pos/shape Rectangle
+/gps/pos/centre 0 0 -25 cm
+/gps/pos/halfx 10 cm
+/gps/pos/halfy 10 cm
+
+/gps/ang/type cos
+
+# Arbitrary spectrum
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file macro/spectrum_hist.dat
+/gps/hist/inter Lin
+
+/run/printProgress 1000
+/run/beamOn 10000
+
+
