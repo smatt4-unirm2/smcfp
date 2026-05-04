@@ -59,7 +59,7 @@ void analysis_calo(const char* filename="scoring_calo.root")
   // 2) ENERGIA TOTALE DEPOSITATA
   // =========================
   TH1D* hTotE = new TH1D("hTotE",
-                         "Energia totale depositata per evento;E_{tot} [MeV];Eventi",
+                         "Total Energy Deposit;E_{tot} [MeV]; Counts [-]",
                          100,0,2000);
 
   Long64_t nentries = t->GetEntries();
@@ -78,14 +78,14 @@ void analysis_calo(const char* filename="scoring_calo.root")
     hTotE->Fill(Etot);
   }
 
-  TCanvas* cTot = new TCanvas("cTot","Energia totale",700,500);
+  TCanvas* cTot = new TCanvas("cTot","Total Edep",700,500);
   hTotE->Draw();
 
   // =========================
   // 3) ENERGIA MEDIA PER PIANO
   // =========================
   TH1D* hPlane = new TH1D("hPlane",
-                          "Energia media depositata per piano;Piano;E media [MeV]",
+                          "Average Energy Deposit per Plane;Plane;#LTE#GT [MeV]",
                           nPlanes,0,nPlanes);
 
   for (Long64_t i=0; i<nentries; i++) {
@@ -110,20 +110,12 @@ void analysis_calo(const char* filename="scoring_calo.root")
   // =========================
   // 4) DISTRIBUZIONE LATERALE DELLO SCIAME
   // =========================
-  TH1D* hSigmaAll = new TH1D("hSigmaAll",
-                             "Larghezza laterale RMS;#sigma_{lat} [indice cristallo];Piani-evento",
-                             100,0,5);
-
-  TH1D* hNhits = new TH1D("hNhits",
-                          "Numero cristalli attivi per piano;N_{hit};Piani-evento",
-                          17,-0.5,16.5);
-
   TH1D* hSigmaVsPlane = new TH1D("hSigmaVsPlane",
-                                 "Larghezza laterale media per piano;Piano;#LT#sigma_{lat}#GT",
+                                 "Average Width per Plane;Plane;#LT#sigma_{lat}#GT",
                                  nPlanes,0,nPlanes);
 
   TH1D* hNhitsVsPlane = new TH1D("hNhitsVsPlane",
-                                 "Numero medio di cristalli attivi per piano;Piano;#LTN_{hit}#GT",
+                                 "Average crystals hit per plane;Plane;#LTN_{hit}#GT",
                                  nPlanes,0,nPlanes);
 
   const double threshold = 0.1; // MeV
@@ -157,9 +149,6 @@ void analysis_calo(const char* filename="scoring_calo.root")
       var /= sumE;
       double sigma = std::sqrt(var);
 
-      hSigmaAll->Fill(sigma);
-      hNhits->Fill(nhit);
-
       hSigmaVsPlane->Fill(p, sigma);
       hNhitsVsPlane->Fill(p, nhit);
     }
@@ -168,41 +157,29 @@ void analysis_calo(const char* filename="scoring_calo.root")
   hSigmaVsPlane->Scale(1.0/nentries);
   hNhitsVsPlane->Scale(1.0/nentries);
 
-  TCanvas* cLat = new TCanvas("cLat","Distribuzione laterale sciame",1200,800);
-  cLat->Divide(2,2);
-
-  cLat->cd(1);
-  hSigmaAll->Draw();
-
-  cLat->cd(2);
-  hNhits->Draw();
-
-  cLat->cd(3);
-  hSigmaVsPlane->Draw("HIST");
-
-  cLat->cd(4);
-  hNhitsVsPlane->Draw("HIST");
-
   // =========================
-  // 5) MAPPE 2D SEPARATE: PIANI PARI / PIANI DISPARI
+  // MAPPE 2D SEPARATE: PIANI PARI / PIANI DISPARI
   // =========================
   TH2D* hMapEven = new TH2D("hMapEven",
-                            "Energia media per cristallo - piani pari;Bar;Indice piano pari",
-                            nBars,0,nBars,nPlanes/2,0,nPlanes/2);
+                            "Average xtal energy - even planes (Y);Bar;Plane",
+                            nBars,0,nBars,nPlanes,0,nPlanes);
 
   TH2D* hMapOdd = new TH2D("hMapOdd",
-                           "Energia media per cristallo - piani dispari;Bar;Indice piano dispari",
-                           nBars,0,nBars,nPlanes/2,0,nPlanes/2);
+                           "Average xtal energy - odd planes (X);Bar;Plane",
+                           nBars,0,nBars,nPlanes,0,nPlanes);
 
+ 
+  double avgE[nPlanes][nBars] = {0.0};
   for (Long64_t i=0; i<nentries; i++) {
     t->GetEntry(i);
 
     for (int p=0; p<nPlanes; p++) {
       for (int b=0; b<nBars; b++) {
+        avgE[p][b] += edep[p][b];
         if (p % 2 == 0) {
-          hMapEven->Fill(b, p/2, edep[p][b]);
+          hMapEven->Fill(b, p, edep[p][b]);
         } else {
-          hMapOdd->Fill(b, p/2, edep[p][b]);
+          hMapOdd->Fill(b, p, edep[p][b]);
         }
       }
     }
@@ -211,36 +188,55 @@ void analysis_calo(const char* filename="scoring_calo.root")
   hMapEven->Scale(1.0/nentries);
   hMapOdd->Scale(1.0/nentries);
 
-  TCanvas* cMap2 = new TCanvas("cMap2","Mappa calorimetro: pari/dispari",1200,500);
-  cMap2->Divide(2,1);
 
-  cMap2->cd(1);
+  TCanvas* cLat = new TCanvas("cLat","Shower Lateral Distribution",1200,800);
+  cLat->Divide(2,2);
+
+  cLat->cd(1);
+  gPad->SetLogz();
   hMapEven->Draw("COLZ");
 
-  cMap2->cd(2);
+  cLat->cd(2);
+  gPad->SetLogz();
   hMapOdd->Draw("COLZ");
 
-  // =========================
-  // 6) VISUALIZZAZIONE 3D SEMPLICE
-  // =========================
-  TH3D* h3 = new TH3D("h3",
-                      "Energia media depositata;Bar;Piano;Energia [MeV]",
-                      nBars,0,nBars,nPlanes,0,nPlanes,100,0,200);
+  cLat->cd(3);
+  hSigmaVsPlane->Draw("HIST");
 
-  for (Long64_t i=0; i<nentries; i++) {
-    t->GetEntry(i);
+  cLat->cd(4);
+  hNhitsVsPlane->Draw("HIST");
 
-    for (int p=0; p<nPlanes; p++) {
-      for (int b=0; b<nBars; b++) {
-        h3->Fill(b, p, edep[p][b]);
+
+  // =========================
+  // 6) PSEUDO-RICOSTRUZIONE 3D
+  // =========================
+  TH3D* h3_voxel = new TH3D("h3_voxel",
+    "3D shower reconstruction;Plane;X;Y",
+    nPlanes,0,nPlanes,
+    nBars,0,nBars,
+    nBars,0,nBars);
+
+  for (int p=0; p<nPlanes-1; p++) {
+
+    if (p % 2 != 0) continue; // usa solo coppie (pari, dispari)
+
+    for (int by=0; by<nBars; by++) {
+      double Ey = avgE[p][by];
+      if (Ey <= 0) continue;
+
+      for (int bz=0; bz<nBars; bz++) {
+        double Ez = avgE[p+1][bz];
+        if (Ez <= 0) continue;
+
+        double E3 = Ey * Ez; // combinazione semplice
+
+        h3_voxel->Fill(p, bz, by, E3);
       }
     }
   }
 
-  h3->Scale(1.0/nentries);
-
-  TCanvas* c3D = new TCanvas("c3D","Visualizzazione 3D",800,600);
-  h3->Draw("LEGO2");
+  TCanvas* c3D_C = new TCanvas("c3D_C","Sciame 3D",900,700);
+  h3_voxel->Draw("BOX2Z");
 
   std::cout << "Analisi completata." << std::endl;
 }
