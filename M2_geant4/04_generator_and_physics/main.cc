@@ -14,12 +14,12 @@ int main(int argc, char** argv)
   // --------------------------------------------------------------------------
   // Scelta esplicita del motore random.
   // --------------------------------------------------------------------------
-  // RanecuEngine è un classico motore semplice e leggero, adatto a un corso
-  // introduttivo. La scelta del motore non impedisce l'uso dei comandi macro:
+  // RanecuEngine è un classico motore semplice e leggero.
+  // La scelta del motore non impedisce l'uso dei comandi macro:
   //   /random/setSeeds s1 s2
   // che continuano a funzionare sul motore attivo.
   //
-  // Alternative utili da mostrare agli studenti:
+  // Alternative utili:
   //   G4Random::setTheEngine(new CLHEP::MixMaxRng);
   //   G4Random::setTheEngine(new CLHEP::MTwistEngine);
   // --------------------------------------------------------------------------
@@ -29,13 +29,12 @@ int main(int argc, char** argv)
 
   // La geometria resta identica al modulo precedente.
   // Le proprietà ottiche del PbWO4 sono mantenute attive a livello di materiale,
-  // così l'utente può provare a combinare GPS + fisica ottica se lo desidera.
+  // si può attivare e disattivare cambiando la flag nella lista di fisica.
   runManager->SetUserInitialization(new DetectorConstruction(true));
 
-  // Physics list modulare controllabile da macro.
+  // Physics list modulare.
   runManager->SetUserInitialization(new PhysicsList());
 
-  // User actions: scoring + generatore primario.
   runManager->SetUserInitialization(new ActionInitialization());
 
   auto* visManager = new G4VisExecutive();

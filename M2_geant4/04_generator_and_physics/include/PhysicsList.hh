@@ -10,6 +10,8 @@ public:
   PhysicsList();
   ~PhysicsList() override = default;
 
+  //void SetCuts() override;
+
 private:
   void PrintConfiguration() const;
 };

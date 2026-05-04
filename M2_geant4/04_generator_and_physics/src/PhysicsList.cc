@@ -5,10 +5,10 @@
 
 // Elettromagnetica
 #include "G4EmStandardPhysics.hh"
-// Alternative utili per esercizi:
-// #include "G4EmStandardPhysics_option4.hh"
-// #include "G4EmLivermorePhysics.hh"
-// #include "G4EmPenelopePhysics.hh"
+// Alternative utili:
+#include "G4EmStandardPhysics_option4.hh"
+#include "G4EmLivermorePhysics.hh"
+#include "G4EmPenelopePhysics.hh"
 
 #include "G4EmExtraPhysics.hh"
 
@@ -42,9 +42,6 @@
 //     * fisica ottica
 // ============================================================================
 
-// Tipo di fisica elettromagnetica
-static constexpr G4int kVerbose = 1;
-
 // Toggle principali
 static constexpr G4bool useHadronic          = true;
 static constexpr G4bool useNeutronHP         = false;
@@ -53,12 +50,13 @@ static constexpr G4bool useRadioactiveDecay  = false;
 static constexpr G4bool useOptical           = false;
 static constexpr G4bool useNeutronTrackCut   = false;
 
-// Se vuoi far sperimentare anche diverse EM, puoi cambiare qui:
+// Tipo di fisica elettromagnetica
 // 0 = G4EmStandardPhysics
 // 1 = G4EmStandardPhysics_option4
 // 2 = G4EmLivermorePhysics
 // 3 = G4EmPenelopePhysics
 static constexpr G4int emChoice = 0;
+static constexpr G4int kVerbose = 1;
 
 // ----------------------------------------------------------------------------
 
@@ -71,14 +69,12 @@ PhysicsList::PhysicsList()
   // --------------------------------------------------------------------------
   // 1) FISICA ELETTROMAGNETICA
   // --------------------------------------------------------------------------
-  // Sempre presente in questo esempio.
   // È la parte minima necessaria per e-, e+, gamma, ecc.
   switch (emChoice) {
     case 0:
       RegisterPhysics(new G4EmStandardPhysics(kVerbose));
       break;
 
-    /*
     case 1:
       RegisterPhysics(new G4EmStandardPhysics_option4(kVerbose));
       break;
@@ -90,7 +86,6 @@ PhysicsList::PhysicsList()
     case 3:
       RegisterPhysics(new G4EmPenelopePhysics(kVerbose));
       break;
-    */
 
     default:
       RegisterPhysics(new G4EmStandardPhysics(kVerbose));
@@ -148,6 +143,54 @@ PhysicsList::PhysicsList()
   PrintConfiguration();
 }
 
+// ----------------------------------------------------------------------------
+/*
+void PhysicsList::SetCuts()
+{
+  // --------------------------------------------------------------------------
+  // PRODUCTION CUTS
+  // --------------------------------------------------------------------------
+  // I production cuts NON sono tagli di tracciamento.
+  //
+  // Definiscono la soglia sotto la quale Geant4 non produce esplicitamente
+  // alcune particelle secondarie.
+  //
+  // Se una secondaria è sotto soglia:
+  // - non viene creata come nuova traccia
+  // - la sua energia viene depositata localmente
+  //
+  // In Geant4 i cut sono definiti come lunghezze.
+  // Geant4 li converte internamente in soglie di energia diverse per ogni
+  // materiale e per ogni particella.
+  // --------------------------------------------------------------------------
+
+  // Cut globale di default.
+  // Viene usato per le particelle per cui non specifichiamo un valore dedicato.
+  SetCutsWithDefault();
+
+  SetCutValue(0.1 * mm, "gamma");
+  SetCutValue(0.1 * mm, "e-");
+  SetCutValue(0.1 * mm, "e+");
+  SetCutValue(1.0 * mm, "proton");
+
+  G4cout << G4endl;
+  G4cout << "============================================================" << G4endl;
+  G4cout << " Setting production cuts" << G4endl;
+  G4cout << "------------------------------------------------------------" << G4endl;
+  G4cout << " gamma cut  : " << GetCutValue("gamma")/mm  << " mm" << G4endl;
+  G4cout << " e- cut     : " << GetCutValue("e-")/mm     << " mm" << G4endl;
+  G4cout << " e+ cut     : " << GetCutValue("e+")/mm     << " mm" << G4endl;
+  G4cout << " proton cut : " << GetCutValue("proton")/mm << " mm" << G4endl;
+  G4cout << "------------------------------------------------------------" << G4endl;
+
+  // Stampa la tabella completa dei cut.
+  // Utile per vedere la conversione lunghezza -> energia nei materiali.
+  DumpCutValuesTable();
+
+  G4cout << "============================================================" << G4endl;
+  G4cout << G4endl;
+}
+*/
 // ----------------------------------------------------------------------------
 
 void PhysicsList::PrintConfiguration() const

@@ -31,10 +31,12 @@
 /gps/ang/sigma_x 5.0 deg
 /gps/ang/sigma_y 5.0 deg
 
-# Energia Gaussiana
+# Gaussian Energy Distribution
 /gps/ene/type Gauss
 /gps/ene/mono 1 GeV
 /gps/ene/sigma 100. MeV
 
 /run/printProgress 1000
-/run/beamOn 1000
+/run/beamOn 10000
+
+

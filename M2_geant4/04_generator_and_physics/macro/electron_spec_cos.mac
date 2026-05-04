@@ -7,13 +7,14 @@
 # - una distribuzione angolare cos(theta)
 # -----------------------------------------------------------------------------
 
+/run/initialize
 /analysis/setFileName electron_spectrum_cos.root
 
 /random/setSeeds 24680 13579
 
 /gps/particle e-
 
-# Posizione della sorgente
+# Source Position
 /gps/pos/type Plane
 /gps/pos/shape Rectangle
 /gps/pos/centre 0 0 -25 cm
@@ -22,7 +23,7 @@
 
 /gps/ang/type cos
 
-# Spettro energetico arbitrario da file ASCII
+# Arbitrary spectrum
 /gps/ene/type Arb
 /gps/hist/type arb
 /gps/hist/file macro/spectrum_hist.dat
@@ -30,3 +31,5 @@
 
 /run/initialize
 /run/beamOn 1000
+
+

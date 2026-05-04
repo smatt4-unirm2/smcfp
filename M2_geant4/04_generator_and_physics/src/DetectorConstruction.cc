@@ -279,6 +279,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   //   ...
   // --------------------------------------------------------------------------
 
+
   fRotZ90 = new G4RotationMatrix();
   fRotZ90->rotateZ(90.0 * deg);
 
@@ -287,12 +288,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     G4double zPos =
       -calorSizeZ / 2.0 + planeThickness / 2.0 + iPlane * (planeThickness + fGapSize);
 
-    G4RotationMatrix* currentRot = (iPlane % 2 == 0) ? nullptr : fRotZ90;
+    G4RotationMatrix* currentRot    = (iPlane % 2 == 0) ? nullptr : fRotZ90;
     G4String currentPlaneName       = (iPlane % 2 == 0) ? "PlaneX"  : "PlaneY";
 
-    new G4PVPlacement(0,
+    new G4PVPlacement(currentRot,
                       G4ThreeVector(0., 0., zPos),
-                      currentPlaneLV,
+                      planeXLV,
                       currentPlaneName,
                       calorimeterLV,
                       false,
