@@ -1,9 +1,8 @@
-# SMCFP Geant4 lessons
+# SMCFP FLUKA lessons
 
-Contenuto:
-- `01_intro_minimal`: world + box singolo + particle gun
-- `02_geometry_calo`: calorimetro completo, 12 layers x 16 barre
-- `03_scoring_calo`: sensitive detector e hit integrate
-- `04_gps_physics`: GPS e setup per studi di physics list
+In this folder are stored the FLAIR project of the FLUKA module of the course
 
-Ogni cartella è un progetto Geant4 indipendente.
+1) Water_bragg_peak.flair
+
+this is a simple bragg peak in a volume of water
+
